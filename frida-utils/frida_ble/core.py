@@ -1,6 +1,8 @@
-import frida, sys, logging
+import sys
+import frida
+import logging
 
-
+from .constants import HOOKS_DIR
 logger = logging.getLogger(__name__)
 
 
@@ -12,7 +14,7 @@ def _read_script(script_name):
     return to_inject
 
 
-def main(script_path, app_name):
+def run(script_path, app_name):
     to_inject = _read_script(script_path)
     try:
         device = frida.get_usb_device()
@@ -32,4 +34,4 @@ def main(script_path, app_name):
 
 
 if __name__ == "__main__":
-    main("ble_script.js", "com.govee.home")
+    run(HOOKS_DIR / "ble_enumerate.js", "com.govee.home")
