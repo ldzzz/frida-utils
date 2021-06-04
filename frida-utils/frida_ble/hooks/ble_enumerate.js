@@ -108,7 +108,7 @@ if (Java.available) {
 
     }); // end perform
 } else {
-    console.log(colours.fg.red + "Only Android is supported." + colours.reset)
+    BleLogger.error("Only Android is supported.")
 }
 
 
