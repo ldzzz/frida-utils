@@ -24,8 +24,8 @@ def _parse_args():
     subparsers = parser.add_subparsers(dest='chosen_enum', help='Enumerate different things')
 
     parser_modules = subparsers.add_parser('M', help='Enumerate modules of the package')
-    parser_modules.add_argument("-i", "--include", help="Choose modules to include")
-    parser_modules.add_argument("-e", "--exclude", help="Choose modules to exclude")
+    parser_modules.add_argument("-i", "--include", help="Filter modules by name (partial or full)")
+    parser_modules.add_argument("-e", "--exclude", help="Filter out modules by name (partial or full)")
 
     parser_threads = subparsers.add_parser('T', help='Enumerate threads of the package')
 

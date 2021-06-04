@@ -7,37 +7,40 @@ import os
 
 logger = logging.getLogger('debug_logger')
 
-class ModuleEnumerator(AbstractEnumerator):
-    def __init__(self, package, includes, excludes, pm):
-        self._hook_fname = os.path.join(HOOK_PATH, "moduleEnumerator.js")
+class ThreadEnumerator(AbstractEnumerator):
+    def __init__(self, package, pm):
+        self._hook_fname = os.path.join(HOOK_PATH, "threadEnumerator.js")
         self.package = package
-        self._includes = includes
-        self._exclude = excludes
         self._session = None
         self._plist = None
         self._pm = pm
 
-
     def parse_payload(self, payload):
-        modules = payload.get('modules')
+        threads = payload.get('threads')
         self._plist = []
         #TODO: based on includes/excludes
-        for e in modules:
-            txt = "[*] Module: {}".format(e.pop('name'))
+        for e in threads:
+            txt = "[*] Thread ID: {}".format(e.pop('id'))
             for k,v in e.items():
+                if(isinstance(v, (dict, list))):
+                    # handle context
+                    txt += "\n" + " |---- [ ] {}:".format(k)
+                    for rk, rv in v.items():
+                        txt += "\n" + " "*20 + "%3s:" % rk + " %s" % rv
+                    continue
                 txt += "\n" + " |---- {}: {}".format(k, v)
             self._plist.append(txt)
 
     def on_message(self, message, data):
         logger.debug('Callback triggered')
-        self._pm.print_msg("Received enumeration of all modules", MessageCode.INFO)
+        self._pm.print_msg("Received enumeration of all threads", MessageCode.INFO)
         try:
             if message:
                 if message['type'] == 'send':
                     payload = message['payload']
                     self.parse_payload(payload)
         except Exception as e:
-            print('exception: {}'.format(e)) 
+            print('exception: {}'.format(e))
 
     def get_hook(self):
         logger.debug('[*] Parsing hook: ' + self._hook_fname)
@@ -47,5 +50,5 @@ class ModuleEnumerator(AbstractEnumerator):
 
     def run(self): #TODO: rework probably not needed
         # Print parsed payload
-        self._pm.print_msg("Found modules:\n", MessageCode.INFO)
+        self._pm.print_msg("Found threads:\n", MessageCode.INFO)
         self._pm.print_list(self._plist)
