@@ -16,11 +16,8 @@ def _parse_args():
 
         Namespace: argparse object containing parsed parameters
     """
-    parser = argparse.ArgumentParser(prog='frida-enumerate',
-                                    description='Enumeration tool for Android apps using Frida.')
-
+    parser = argparse.ArgumentParser(prog='frida-enumerate', description='Enumeration tool for Android apps using Frida.')
     parser.add_argument('package', help='Package name of the app')
-
     subparsers = parser.add_subparsers(dest='chosen_enum', help='Enumerate different things')
 
     parser_modules = subparsers.add_parser('M', help='Enumerate modules of the package')
@@ -28,13 +25,9 @@ def _parse_args():
     parser_modules.add_argument("-e", "--exclude", help="Filter out modules by name (partial or full)")
 
     parser_threads = subparsers.add_parser('T', help='Enumerate threads of the package')
-
-    parser.add_argument('-v', '--verbose',
-                        action='store_true',
-                        help='Output additional info logs to terminal')
+    parser.add_argument('-v', '--verbose', action='store_true', help='Output additional info logs to terminal')
 
     params = parser.parse_args()
-
     logger.debug('Params received: %s', params)
     return params
 

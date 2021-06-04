@@ -10,12 +10,28 @@ import os
 logger = logging.getLogger('debug_logger')
 printerManager = PrinterManager()
 
+
+def parse_args_list(l):
+    if not l:
+        return l
+    pl = l.replace(", ", ",").replace(" ", ",").split(",")
+    return pl
+
 def execute_enumerator(args):
     printerManager.print_msg('Spawning ' + args.package, MessageCode.INFO)
     chosen_enumerator = None 
+
+    # parse include/exclude lists
+    args.include = parse_args_list(args.include)
+    args.exclude = parse_args_list(args.exclude)
+
+    printerManager.print_msg("Include list: {}".format(args.include))
+    printerManager.print_msg("Exclude list: {}".format(args.exclude))
+
+
     if args.chosen_enum == 'M':
         from .enumerators.module_enumerator import ModuleEnumerator
-        chosen_enumerator = ModuleEnumerator(package=args.package, includes=None, excludes=None, pm=printerManager)
+        chosen_enumerator = ModuleEnumerator(package=args.package, includes=args.include, excludes=args.exclude, pm=printerManager)
     elif args.chosen_enum == 'T':
         from .enumerators.thread_enumerator import ThreadEnumerator
         chosen_enumerator = ThreadEnumerator(args.package, printerManager)
