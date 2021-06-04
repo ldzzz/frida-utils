@@ -7,8 +7,8 @@ setup(
     description="Utils for Frida.",
     # TODO: eldin is frida-enumerate correct?
     package_data={
-        "frida-enumerate": ["frida_enumerate/hooks/*"],
-        "frida_ble": ["frida_ble/hooks/*"],
+        "frida_enumerate": ["hooks/*"],
+        "frida_ble": ["hooks/*"],
     },
     include_package_data=True,
     classifiers=[
