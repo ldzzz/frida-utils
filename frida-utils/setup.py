@@ -28,7 +28,7 @@ setup(
     entry_points={
         "console_scripts": [
             "frida-enumerate=frida_enumerate:start_cmd",
-            "frida-ble=frida_ble:start_cmd",
+            "frida-ble=frida_ble:cli",
         ],
     },
 )

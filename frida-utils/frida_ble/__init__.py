@@ -1,1 +1,1 @@
-from .cmd import start_cmd
+from .cmd import cli
