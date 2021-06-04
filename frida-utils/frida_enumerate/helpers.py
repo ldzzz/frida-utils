@@ -29,28 +29,9 @@ class PrinterManager():
         else:
             print(s)
 
-    def _print_single_module(self, module):
-        name = module.get('name')
-        base = module.get('base')
-        size = module.get('size')
-        path = module.get('path')
+    def print_list(self, plist):
+        for e in plist:
+            print(self._get_color() + e + Fore.RESET)
 
-        color = self._get_color()
-        msg = color
-        
-        msg +=  "[*] Module: {}\n" \
-                " |---- Base address: {}\n" \
-                " |---- Size: {}\n" \
-                " |---- Path: {}".format(name, base, size, path)
-        
-        msg += Fore.RESET
-        print(msg)
-
-    def print_modules(self, payload):
-        modules = payload.get('modules')
-        self.print_msg("Found modules:\n", MessageCode.INFO)
-
-        for e in modules:
-            self._print_single_module(e)
 
 
