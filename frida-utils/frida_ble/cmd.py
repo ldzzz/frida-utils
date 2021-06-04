@@ -36,20 +36,28 @@ def _setup_parser():
     return parser
 
 
-def cli():
-    p = _setup_parser()
-    args = p.parse_args()
-
-    ble_tools = FridaBLETools(args.app)
-
-    if args.command == "scan":
-        ble_tools.scan()
-    elif args.command == "monitor":
-        ble_tools.monitor()
-    else:
-        raise NotImplementedError(f"Command {args.command} not implemted")
+def _wait():
     try:
         print("Press any button to exit.")
         input()
     except KeyboardInterrupt:
         pass
+
+
+def cli():
+    p = _setup_parser()
+    args = p.parse_args()
+    print(args)
+    ble_tools = FridaBLETools(args.app)
+
+    if args.command == "scan":
+        ble_tools.scan()
+        _wait()
+    elif args.command == "monitor":
+        ble_tools.monitor()
+        _wait()
+    elif args.command == "enumerate":
+        ble_tools.enumerate()
+        _wait()
+    else:
+        raise NotImplementedError(f"Command {args.command} not implemted")

@@ -37,3 +37,6 @@ class FridaBLETools:
 
     def monitor(self):
         self._run_frida_script("ble_monitor.js")
+
+    def enumerate(self):
+        self._run_frida_script("ble_enumerate.js")
