@@ -5,7 +5,7 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     description='Utils for Frida.',
-    package_data={'frida_enumerate': ['/hooks/*']},
+    package_data={'frida_enumerate': ['hooks/*']},
     include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
