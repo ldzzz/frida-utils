@@ -5,7 +5,8 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     description='Utils for Frida.',
-    package_data={'frida-enumerate': ['frida_enumerate/hooks/*']},
+    # TODO: eldin is frida-enumerate correct? 
+    package_data={'frida-enumerate': ['frida_enumerate/hooks/*'],'frida_ble': ['frida_ble/hooks/*']},
     include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -19,6 +20,7 @@ setup(
     install_requires=[
         "colorama",
         "colorlog",
+        "frida-tools",
     ],
     entry_points={
             "console_scripts": [
