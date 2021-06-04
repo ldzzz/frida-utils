@@ -1,9 +1,7 @@
-while(True) {
-    var appModules = Process.enumerateModules();
+var appModules = Process.enumerateModules();
 
-    var send_message = {
-        'modules': appModules,
-    };
+var send_message = {
+    'modules': appModules,
+};
 
-    send(send_message);
-}
+send(send_message);
