@@ -5,7 +5,6 @@ setup(
     version="0.1.0",
     packages=find_packages(),
     description="Utils for Frida.",
-    # TODO: eldin is frida-enumerate correct?
     package_data={
         "frida_enumerate": ["hooks/*"],
         "frida_ble": ["hooks/*"],
