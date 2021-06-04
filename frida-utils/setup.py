@@ -20,9 +20,9 @@ setup(
     ],
     python_requires=">=3.7",
     install_requires=[
-        "colorama",
-        "colorlog",
-        "frida-tools",
+        "colorama >= 0.4.4",
+        "colorlog >= 5.0.1",
+        "frida >= 14.2.18 "
     ],
     entry_points={
         "console_scripts": [
