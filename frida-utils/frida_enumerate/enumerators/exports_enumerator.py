@@ -7,9 +7,10 @@ import os
 
 logger = logging.getLogger('debug_logger')
 
-class ModuleEnumerator(AbstractEnumerator):
+
+class ExportsEnumerator(AbstractEnumerator):
     def __init__(self, package, includes, excludes, pm):
-        self._hook_fname = os.path.join(HOOK_PATH, "moduleEnumerator.js")
+        self._hook_fname = os.path.join(HOOK_PATH, "exportsEnumerator.js")
         self.package = package
         self._includes = includes
         self._excludes = excludes
@@ -18,39 +19,39 @@ class ModuleEnumerator(AbstractEnumerator):
         self._pm = pm
 
     def _include_exclude_modules_by_name(self, modules):
-        ie_mods = []
         if self._excludes:
-            for ind, e in enumerate(modules):
-                if any(string in e.get('name') for string in self._excludes):
-                    modules.pop(ind)
+            for k in modules.copy():
+                if any(string in k for string in self._excludes):
+                    modules.pop(k)
         if self._includes:
-            for e in modules:
-                if any(string in e.get('name') for string in self._includes):
-                    ie_mods.append(e)
-        else:
-            ie_mods = modules
-        return ie_mods
-
+            for k in modules.copy():
+                if not any(string in k for string in self._includes):
+                    modules.pop(k)
+        return modules
+    
     def parse_payload(self, payload):
-        modules = payload.get('modules')
-        modules = self._include_exclude_modules_by_name(modules)
+        exports = payload.get('exports')
+        exports = self._include_exclude_modules_by_name(exports)
         self._plist = []
-        for e in modules:
-            txt = "[*] Module: {}".format(e.pop('name'))
-            for k,v in e.items():
-                txt += "\n" + " |---- {}: {}".format(k, v)
+        txt = ""
+        for k,v in exports.items():
+            txt = "[*] Module: {}".format(k)
+            for ex in v:
+                for kk, vv in ex.items():
+                    txt += "\n" + " |---- {}: {}".format(kk, vv)
+                txt += "\n" + " "*2 + "-"*50
             self._plist.append(txt)
 
     def on_message(self, message, data):
         logger.debug('Callback triggered')
-        self._pm.print_msg("Received enumeration of all modules", MessageCode.INFO)
+        self._pm.print_msg("Received exports of all exports", MessageCode.INFO)
         try:
             if message:
                 if message['type'] == 'send':
                     payload = message['payload']
                     self.parse_payload(payload)
         except Exception as e:
-            print('exception: {}'.format(e)) 
+            print('exception: {}'.format(e))
 
     def get_hook(self):
         logger.debug('[*] Parsing hook: ' + self._hook_fname)
@@ -59,6 +60,5 @@ class ModuleEnumerator(AbstractEnumerator):
         return hook.read()
 
     def run(self): #TODO: rework probably not needed
-        # Print parsed payload
-        self._pm.print_msg("Found modules:\n", MessageCode.INFO)
+        self._pm.print_msg("Found exports:\n", MessageCode.INFO)
         self._pm.print_list(self._plist)

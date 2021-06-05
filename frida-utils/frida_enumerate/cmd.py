@@ -20,12 +20,20 @@ def _parse_args():
     parser.add_argument('package', help='Package name of the app')
     subparsers = parser.add_subparsers(dest='chosen_enum', help='Enumerate different things')
 
-    parser_modules = subparsers.add_parser('M', help='Enumerate modules of the package')
+    parser_modules = subparsers.add_parser('M', help='Enumerate modules')
     parser_modules.add_argument("-i", "--include", help="Filter modules by name (partial or full)")
     parser_modules.add_argument("-e", "--exclude", help="Filter out modules by name (partial or full)")
 
-    parser_threads = subparsers.add_parser('T', help='Enumerate threads of the package')
+    parser_threads = subparsers.add_parser('T', help='Enumerate threads')
     parser.add_argument('-v', '--verbose', action='store_true', help='Output additional info logs to terminal')
+
+    parser_exports = subparsers.add_parser('E', help='Enumerate exports')
+    parser_exports.add_argument("-i", "--include", help="Filter modules by name (partial or full)")
+    parser_exports.add_argument("-e", "--exclude", help="Filter out modules by name (partial or full)")
+
+    parser_imports = subparsers.add_parser('I', help='Enumerate imports')
+    parser_imports.add_argument("-i", "--include", help="Filter modules by name (partial or full)")
+    parser_imports.add_argument("-e", "--exclude", help="Filter out modules by name (partial or full)")
 
     params = parser.parse_args()
     logger.debug('Params received: %s', params)

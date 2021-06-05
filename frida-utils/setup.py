@@ -5,7 +5,8 @@ setup(
     version='0.1.0',
     packages=find_packages(),
     description='Utils for Frida.',
-    package_data={'frida_enumerate': ['hooks/*']},
+    package_data={  'frida_enumerate': ['hooks/*'], 
+                    'frida_monitor': ['hooks/*']},
     include_package_data=True,
     classifiers=[
         "Development Status :: 3 - Alpha",
@@ -23,7 +24,8 @@ setup(
     ],
     entry_points={
             "console_scripts": [
-                "frida-enumerate=frida_enumerate:start_cmd"
+                "frida-enumerate=frida_enumerate:start_cmd",
+                "frida-monitor=frida_monitor:start_cmd"
             ],
         }
 )

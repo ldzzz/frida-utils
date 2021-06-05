@@ -4,4 +4,10 @@ var send_message = {
     'threads': appThreads,
 };
 
-send(send_message);
+onEnter(log, args, state) {
+    console.log("ENTERED");
+  };
+
+//send(send_message);
+
+

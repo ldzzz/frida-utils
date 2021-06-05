@@ -22,6 +22,11 @@ def execute_enumerator(args):
     chosen_enumerator = None 
 
     # parse include/exclude lists
+    if not hasattr(args, 'include'):
+        args.include = None
+    if not hasattr(args, 'exclude'):
+        args.exclude = None
+    
     args.include = parse_args_list(args.include)
     args.exclude = parse_args_list(args.exclude)
 
@@ -35,6 +40,13 @@ def execute_enumerator(args):
     elif args.chosen_enum == 'T':
         from .enumerators.thread_enumerator import ThreadEnumerator
         chosen_enumerator = ThreadEnumerator(args.package, printerManager)
+    elif args.chosen_enum == 'E':
+        from .enumerators.exports_enumerator import ExportsEnumerator
+        chosen_enumerator = ExportsEnumerator(package=args.package, includes=args.include, excludes=args.exclude, pm=printerManager)
+    elif args.chosen_enum == 'I':
+        from .enumerators.imports_enumerator import ImportsEnumerator
+        chosen_enumerator = ImportsEnumerator(package=args.package, includes=args.include, excludes=args.exclude, pm=printerManager)
+        pass
 
     try:
         pid = frida.get_usb_device().spawn(chosen_enumerator.package)
