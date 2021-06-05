@@ -20,6 +20,12 @@ def _setup_monitor_parser(subparsers):
     )
 
 
+def _setup_fuzz_parser(subparsers):
+    monitor_parser = subparsers.add_parser(
+        "fuzz", help="Hook onto BluetoothGattWrite and send random data"
+    )
+
+
 def _setup_parser():
     parser = argparse.ArgumentParser(description="Frida utilities for BLE testing")
     parser.add_argument(
@@ -32,6 +38,7 @@ def _setup_parser():
     _setup_scan_parser(subparsers)
     _setup_enumerate_parser(subparsers)
     _setup_monitor_parser(subparsers)
+    _setup_fuzz_parser(subparsers)
 
     return parser
 
@@ -42,6 +49,8 @@ def _wait():
         input()
     except KeyboardInterrupt:
         pass
+
+    print("Done ...")
 
 
 def cli():
@@ -58,6 +67,9 @@ def cli():
         _wait()
     elif args.command == "enumerate":
         ble_tools.enumerate()
+        _wait()
+    elif args.command == "fuzz":
+        ble_tools.fuzz()
         _wait()
     else:
         raise NotImplementedError(f"Command {args.command} not implemted")

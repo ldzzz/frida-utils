@@ -22,7 +22,8 @@ setup(
     install_requires=[
         "colorama >= 0.4.4",
         "colorlog >= 5.0.1",
-        "frida >= 14.2.18 "
+        "frida >= 14.2.18 ",
+        "ipapi >= 1.0.4",
     ],
     entry_points={
         "console_scripts": [

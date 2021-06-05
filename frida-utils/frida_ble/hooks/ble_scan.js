@@ -63,8 +63,9 @@ class BleLogger {
 }
 
 if (Java.available) {
-    BleLogger.info("Starting script ...")
+    BleLogger.info("Starting scan script ...")
     Java.perform(function () {
+        BleLogger.info("Performing ... ")
         // https://developer.android.com/reference/android/bluetooth/le/ScanCallback
         // Find the class that it interesting for us, ScanCallback
         let ble_scan_cb = Java.use("android.bluetooth.le.ScanCallback");
