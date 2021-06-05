@@ -27,7 +27,7 @@ def execute_enumerator(args):
     try:
         pid = frida.get_usb_device().spawn(args.package)
         session = frida.get_usb_device().attach(pid)
-        hook = open(os.path.join(HOOK_PATH, 'networkMonitor.js'), 'r')
+        hook = open(os.path.join(HOOK_PATH, 'libcMonitor.js'), 'r')
         script = session.create_script(hook.read())
         script.on('message', on_message)
         script.load() 
