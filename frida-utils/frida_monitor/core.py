@@ -14,9 +14,12 @@ def execute_enumerator(args):
     printerManager.print_msg('Spawning ' + args.package, MessageCode.INFO)
     chosen_monitor = None
     
-    #TODO: add support for multiple monitors
-    from .monitors.libc_monitor import LibcMonitor
-    chosen_monitor = LibcMonitor(package=args.package, pm=printerManager)
+    if args.chosen_monitor == 'L':
+        from .monitors.libc_monitor import LibcMonitor
+        chosen_monitor = LibcMonitor(package=args.package, extras=args.extras, pm=printerManager)
+    else:
+        print('No recognized monitor value')
+        return
 
     try:
         pid = frida.get_usb_device().spawn(chosen_monitor.package)

@@ -10,12 +10,7 @@ logger = logging.getLogger('debug_logger')
 logger.setLevel(logging.INFO)
 
 def _parse_args():
-    """Method creates command line parser and parses the options accordingly.
-
-    Returns:parsed arguments
-
-        Namespace: argparse object containing parsed parameters
-    """
+    """Method creates command line parser and parses the options accordingly."""
     parser = argparse.ArgumentParser(prog='frida-enumerate', description='Enumeration tool for Android apps using Frida.')
     parser.add_argument('package', help='Package name of the app')
     subparsers = parser.add_subparsers(dest='chosen_enum', help='Enumerate different things')

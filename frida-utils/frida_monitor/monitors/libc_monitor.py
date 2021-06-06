@@ -9,11 +9,12 @@ logger = logging.getLogger('debug_logger')
 
 
 class LibcMonitor(AbstractMonitor):
-    def __init__(self, package, pm):
+    def __init__(self, package, extras, pm):
         self._hook_fname = os.path.join(HOOK_PATH, "libcMonitor.js")
         self.package = package
         self._session = None
         self._plist = None
+        self._extras = extras
         self._pm = pm
     
     def parse_payload(self, payload):
@@ -29,6 +30,10 @@ class LibcMonitor(AbstractMonitor):
         txt += "%s%4s" % (s, stype)
         txt += "%s%4s" % (s, port)  
         txt += "%s %s" % (s, ip)
+        if self._extras:
+            txt += '\n'
+            s = " "*4 + "|-- "
+            txt += ' '*5 + "%s%4s" % (s, 'TESTING')
         self._pm.print_network(txt, event=event)        
 
     def on_message(self, message, data):

@@ -10,14 +10,13 @@ logger = logging.getLogger('debug_logger')
 logger.setLevel(logging.INFO)
 
 def _parse_args():
-    """Method creates command line parser and parses the options accordingly.
-
-    Returns:parsed arguments
-
-        Namespace: argparse object containing parsed parameters
-    """
+    """Method creates command line parser and parses the options accordingly."""
     parser = argparse.ArgumentParser(prog='frida-monitor', description='Monitor tool for Android apps using Frida.')
     parser.add_argument('package', help='Package name of the app')
+    subparsers = parser.add_subparsers(dest='chosen_monitor', help='Monitor different things')
+
+    parser_modules = subparsers.add_parser('L', help='Monitor libc (recv and send - alike functions)')
+    parser_modules.add_argument("-e", "--extras", action='store_true', help="Print extra information about IPs")
 
     parser.add_argument('-v', '--verbose', action='store_true', help='Output additional info logs to terminal')
     params = parser.parse_args()
