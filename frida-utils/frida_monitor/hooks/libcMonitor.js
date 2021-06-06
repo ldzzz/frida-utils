@@ -24,7 +24,8 @@ myModule.enumerateExports().filter(module_export => module_export.type === 'func
           'event': module_export.name,
           'fd': fd,
           'sockaddr': sockaddr,
-          'socktype': socktype
+          'socktype': socktype,
+          'buffer': bytesToHex(buf)
         }
 
         send(data); // send to Python callback for parsing and printing
@@ -41,3 +42,13 @@ function buf2hex(buffer) { // buffer is an ArrayBuffer
 	var ha = new Uint8Array(buffer);
 	return ha.map(x => x.toString(16).padStart(2, '0')).join('');
   }
+
+  function bytesToHex(bytes) {
+    var barray = new Uint8Array(bytes);
+    for (var hex = [], i = 0; i < barray.length; i++) { 
+        hex.push(((barray[i] >>> 4) & 0xF).toString(16).toUpperCase());
+        hex.push((barray[i] & 0xF).toString(16).toUpperCase());
+        hex.push(" ");
+    }
+    return hex.join("");
+}
