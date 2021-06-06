@@ -21,17 +21,23 @@ class PrinterManager():
     def print_msg(self, s, event=None):
         s = '[*] {}'.format(s)
         if event == MessageCode.ERROR:
-            print(Fore.RED + s + Fore.RESET)
+            print(Fore.RED + Style.BRIGHT + s + Fore.RESET)
         elif event == MessageCode.WARN:
-            print(Fore.YELLOW + s + Fore.RESET)
+            print(Fore.YELLOW + Style.BRIGHT + s + Fore.RESET)
         elif event == MessageCode.INFO:
-            print(Fore.GREEN + s + Fore.RESET)
+            print(Fore.GREEN + Style.BRIGHT + s + Fore.RESET)
         else:
             print(s)
 
     def print_list(self, plist):
         for e in plist:
-            print(self._get_color() + e + Fore.RESET)
+            print(self._get_color() + Style.BRIGHT + e + Fore.RESET)
+
+    def print_network(self, e, event):
+        if event in 'recvfrom':
+            print(Fore.RED + Style.BRIGHT + e + Fore.RESET)
+        elif event in 'sendto':
+            print(Fore.GREEN + Style.BRIGHT + e + Fore.RESET)
 
 
 

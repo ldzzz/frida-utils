@@ -17,20 +17,19 @@ class LibcMonitor(AbstractMonitor):
         self._pm = pm
     
     def parse_payload(self, payload):
-        print(payload)
-        '''
-        exports = payload.get('exports')
-        exports = self._include_exclude_modules_by_name(exports)
-        self._plist = []
-        txt = ""
-        for k,v in exports.items():
-            txt = "[*] Module: {}".format(k)
-            for ex in v:
-                for kk, vv in ex.items():
-                    txt += "\n" + " |---- {}: {}".format(kk, vv)
-                txt += "\n" + " "*2 + "-"*50
-            self._plist.append(txt)
-        '''
+        event       = payload.get('event')
+        fd          = payload.get('fd')
+        stype       = payload.get('socktype')
+        ip          = payload.get('sockaddr').get('ip')
+        port        = payload.get('sockaddr').get('port')
+
+        txt = "[*] {}".format(event.upper())
+        s = "\n" + " "*4 + "|-- "
+        txt += "%s%4s" % (s, fd)
+        txt += "%s%4s" % (s, stype)
+        txt += "%s%4s" % (s, port)  
+        txt += "%s %s" % (s, ip)
+        self._pm.print_network(txt, event=event)        
 
     def on_message(self, message, data):
         try:
@@ -48,5 +47,4 @@ class LibcMonitor(AbstractMonitor):
         return hook.read()
 
     def run(self): #TODO: rework probably not needed
-        self._pm.print_msg("Found exports:\n", MessageCode.INFO)
-        self._pm.print_list(self._plist)
+        self._pm.print_msg("Going to monitor libc:\n", MessageCode.INFO)
