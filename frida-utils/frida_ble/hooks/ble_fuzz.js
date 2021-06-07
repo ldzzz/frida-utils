@@ -1,9 +1,20 @@
 
 rpc.exports = {
-    setuuid: setuuid
+    setparams: setparams
 };
 
 var uuid_to_fuzz = "00010203-0405-0607-0809-0a0b0c0d2b10"
+var methods_to_fuzz = ["NOTIFY"]
+
+// Ignore first few messages so the connection can be established in app
+var ignore_times = 10
+
+// Get some information from python script
+function setparams(uuid, methods, ignore_messages) {
+    uuid_to_fuzz = uuid
+    methods_to_fuzz = methods
+    ignore_times = ignore_messages
+}
 
 // JS Colours: https://stackoverflow.com/questions/9781218/how-to-change-node-jss-console-font-color
 // Just some terminal colours for nicer debugging
@@ -114,30 +125,26 @@ if (Java.available) {
             let ble_gatt_cb_new = Java.use(this.$className);
             ble_gatt_cb_new.onServicesDiscovered.implementation = function (gatt, status) {
                 let retval = ble_gatt_cb_new.onServicesDiscovered.call(this, gatt, status);
-                //bt_gatt = Java.cast(gatt, Java.use("android.bluetooth.BluetoothGatt"))
                 return retval;
             };
 
             // Override BluetoothGattCallback functions, log their output and return the same retval 
             ble_gatt_cb_new.onCharacteristicRead.implementation = function (gatt, chr, status) {
                 let retval = ble_gatt_cb_new.onCharacteristicRead.call(this, gatt, chr, status);
+                fuzz_value(chr, "READ")
                 BleLogger.on_read(chr, retval)
                 return retval;
             };
 
             ble_gatt_cb_new.onCharacteristicWrite.implementation = function (gatt, chr, status) {
                 let retval = ble_gatt_cb_new.onCharacteristicWrite.call(this, gatt, chr, status);
+                fuzz_value(chr, "WRITE")
                 BleLogger.on_write(chr, retval)
                 return retval;
             };
 
             ble_gatt_cb_new.onCharacteristicChanged.implementation = function (gatt, chr) {
-
-
-                if (uuid_to_fuzz != null) {
-                    fuzz_value(chr)
-                }
-
+                fuzz_value(chr, "NOTIFY")
                 let retval = ble_gatt_cb_new.onCharacteristicChanged.call(this, gatt, chr);
                 BleLogger.on_changed(chr, retval)
                 return retval;
@@ -160,21 +167,24 @@ function calc_xor(data) {
     return data
 }
 
-// Ignore first few messages so the connection can be established in app
-var ignore_times = 10
 
-function fuzz_value(chr) {
+
+function fuzz_value(chr, method) {
     let uuid = chr.getUuid()
-    if (uuid_to_fuzz != uuid.toString()) {
-        BleLogger.info("Not the right char, do nothing.")
+    // Skip if uuid to fuzz is not set
+    // Skip if uuid_to_fuzz is not the same as given UUID
+    // Skip if method is not in methots to be fuzzer
+    if (uuid_to_fuzz == null || uuid_to_fuzz != uuid.toString() || !methods_to_fuzz.includes(method)) {
+        BleLogger.info("Skipping for: " + method)
         return;
     }
-
+    BleLogger.info("STARTING fuzzing for: " + uuid + " at method: " + method)
+    // Get the current value, and check if the value is set
     let current_value = chr.getValue()
-
     if (current_value.length < 0)
         return;
 
+    // Ignore first few messags
     if (ignore_times > 0) {
         ignore_times--
         return
@@ -188,18 +198,15 @@ function fuzz_value(chr) {
     // Change number of bytes previously decided
     for (let i = 0; i < num_changes; i++) {
         // Get random index to change
-        // Target certain bytes
-        let rnd_index = getRandomIntInclusive(2, max_len / 2)
+        let rnd_index = getRandomIntInclusive(0, max_len)
         // Get random value to replace
         let rnd_value = getRandomIntInclusive(2, 254)
         // Replace value with randomlly generated one
         current_value[rnd_index] = rnd_value
     }
+    // Communication of this application does xor of all bytes and sets it at last place 
     current_value = calc_xor(current_value)
+    // Set our fuzzed value as value before fowarding it to the real "user"
     chr.setValue(current_value)
     BleLogger.fuzzer_new(current_value)
-}
-
-function setuuid(uuid) {
-    uuid_to_fuzz = uuid
 }

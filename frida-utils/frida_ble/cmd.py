@@ -1,6 +1,6 @@
 import argparse
-from .core import FridaBLETools
-from .constants import HOOKS_DIR
+from random import choices
+from .core import FridaBLETools, BLE_METHODS
 
 
 def _setup_scan_parser(subparsers):
@@ -23,6 +23,21 @@ def _setup_monitor_parser(subparsers):
 def _setup_fuzz_parser(subparsers):
     monitor_parser = subparsers.add_parser(
         "fuzz", help="Hook onto BluetoothGattWrite and send random data"
+    )
+    monitor_parser.add_argument("uuid", help="UUID to be fuzzed.", type=str)
+    monitor_parser.add_argument(
+        "method",
+        help="On which method should the fuzzing for given UUID be applied",
+        nargs="+",
+        type=str,
+        choices=BLE_METHODS,
+    )
+    monitor_parser.add_argument(
+        "-i",
+        "--ignore-messages",
+        dest="ignore",
+        type=int,
+        help="Ignore first N messages, before fuzzing start.",
     )
 
 
@@ -69,7 +84,7 @@ def cli():
         ble_tools.enumerate()
         _wait()
     elif args.command == "fuzz":
-        ble_tools.fuzz()
+        ble_tools.fuzz(args.uuid, args.method, args.ignore)
         _wait()
     else:
         raise NotImplementedError(f"Command {args.command} not implemted")

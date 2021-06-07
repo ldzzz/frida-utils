@@ -1,11 +1,15 @@
-import os
+from gzip import READ, WRITE
 import frida
 import logging
+from enum import Enum
 from pathlib import Path
 
 from .constants import HOOKS_DIR
 
 logger = logging.getLogger(__name__)
+
+# NOTIDY and INDICATE seem to be the same thing in use ...
+BLE_METHODS = set(["WRITE", "READ", "NOTIFY"])
 
 
 def _read_script(script_name):
@@ -43,10 +47,8 @@ class FridaBLETools:
     def enumerate(self):
         self._run_frida_script("ble_enumerate.js")
 
-    def fuzz(self):
+    def fuzz(self, uuid, method, ignore):
         self._run_frida_script("ble_fuzz.js")
-        print(self._script._rpc_request("list"))
-        set_uuid = getattr(self._script.exports, "setuuid")
-        uuid = "00010203-0405-0607-0809-0a0b0c0d2b10"
-        set_uuid(uuid)
-        print("Done setting uuid")
+        set_params = getattr(self._script.exports, "setparams")
+        set_params(uuid, method, ignore)
+        print("Done setting up the script, starting ...")
