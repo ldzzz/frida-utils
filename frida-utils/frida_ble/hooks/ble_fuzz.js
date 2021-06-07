@@ -113,9 +113,6 @@ class BleLogger {
 }
 
 
-
-var bt_gatt = null;
-
 if (Java.available) {
     BleLogger.info("Starting enumerate script ...")
     Java.perform(function () {
@@ -130,21 +127,21 @@ if (Java.available) {
 
             // Override BluetoothGattCallback functions, log their output and return the same retval 
             ble_gatt_cb_new.onCharacteristicRead.implementation = function (gatt, chr, status) {
+                fuzz_value(gatt, chr, "READ")
                 let retval = ble_gatt_cb_new.onCharacteristicRead.call(this, gatt, chr, status);
-                fuzz_value(chr, "READ")
                 BleLogger.on_read(chr, retval)
                 return retval;
             };
 
             ble_gatt_cb_new.onCharacteristicWrite.implementation = function (gatt, chr, status) {
+                fuzz_value(gatt, chr, "WRITE")
                 let retval = ble_gatt_cb_new.onCharacteristicWrite.call(this, gatt, chr, status);
-                fuzz_value(chr, "WRITE")
                 BleLogger.on_write(chr, retval)
                 return retval;
             };
 
             ble_gatt_cb_new.onCharacteristicChanged.implementation = function (gatt, chr) {
-                fuzz_value(chr, "NOTIFY")
+                fuzz_value(gatt, chr, "NOTIFY")
                 let retval = ble_gatt_cb_new.onCharacteristicChanged.call(this, gatt, chr);
                 BleLogger.on_changed(chr, retval)
                 return retval;
@@ -169,7 +166,7 @@ function calc_xor(data) {
 
 
 
-function fuzz_value(chr, method) {
+function fuzz_value(gatt, chr, method) {
     let uuid = chr.getUuid()
     // Skip if uuid to fuzz is not set
     // Skip if uuid_to_fuzz is not the same as given UUID
@@ -208,5 +205,10 @@ function fuzz_value(chr, method) {
     current_value = calc_xor(current_value)
     // Set our fuzzed value as value before fowarding it to the real "user"
     chr.setValue(current_value)
+
+    if (method == "WRITE") {
+        gatt.writeCharacteristic(chr)
+    }
+
     BleLogger.fuzzer_new(current_value)
 }

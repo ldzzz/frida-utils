@@ -22,7 +22,7 @@ def _setup_monitor_parser(subparsers):
 
 def _setup_fuzz_parser(subparsers):
     monitor_parser = subparsers.add_parser(
-        "fuzz", help="Hook onto BluetoothGattWrite and send random data"
+        "fuzz", help="Hook on to desired action and start fuzzing"
     )
     monitor_parser.add_argument("uuid", help="UUID to be fuzzed.", type=str)
     monitor_parser.add_argument(
