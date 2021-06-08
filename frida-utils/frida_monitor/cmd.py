@@ -15,9 +15,11 @@ def _parse_args():
     parser.add_argument('package', help='Package name of the app')
     subparsers = parser.add_subparsers(dest='chosen_monitor', help='Monitor different things')
 
-    parser_modules = subparsers.add_parser('L', help='Monitor libc (recv and send - alike functions)')
-    parser_modules.add_argument("-e", "--extras", action='store_true', help="Print extra information about IPs")
-    parser_modules.add_argument("-b", "--buffer", action='store_true', help="Print buffer data sent and received")
+    parser_network = subparsers.add_parser('L', help='Monitor libc (recv and send - alike functions)')
+    parser_network.add_argument("-e", "--extras", action='store_true', help="Print extra information about IPs")
+    parser_network.add_argument("-b", "--buffer", action='store_true', help="Print buffer data sent and received")
+
+    parser_threads = subparsers.add_parser('JC', help='Monitor Java crypto methods')
 
     parser.add_argument('-v', '--verbose', action='store_true', help='Output additional info logs to terminal')
     params = parser.parse_args()

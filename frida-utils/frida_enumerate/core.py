@@ -46,7 +46,9 @@ def execute_enumerator(args):
     elif args.chosen_enum == 'I':
         from .enumerators.imports_enumerator import ImportsEnumerator
         chosen_enumerator = ImportsEnumerator(package=args.package, includes=args.include, excludes=args.exclude, pm=printerManager)
-        pass
+    elif args.chosen_enum == 'J':
+        from .enumerators.java_enumerator import JavaEnumerator
+        chosen_enumerator = JavaEnumerator(package=args.package, includes=args.include, excludes=args.exclude, pm=printerManager)
 
     try:
         pid = frida.get_usb_device().spawn(chosen_enumerator.package)

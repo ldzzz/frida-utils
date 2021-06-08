@@ -17,6 +17,9 @@ def execute_enumerator(args):
     if args.chosen_monitor == 'L':
         from .monitors.libc_monitor import LibcMonitor
         chosen_monitor = LibcMonitor(package=args.package, extras=args.extras, buf=args.buffer, pm=printerManager)
+    elif args.chosen_monitor == 'JC':
+        from .monitors.java_crypto_monitor import JavaCryptoMonitor
+        chosen_monitor = JavaCryptoMonitor(package=args.package, pm=printerManager)
     else:
         print('No recognized monitor value')
         return
