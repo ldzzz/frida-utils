@@ -3,7 +3,8 @@ var myModule = Process.getModuleByName('libc.so');
 var myFuncs = ['recv', 'send'];
 
 // attach only to functions that have recv or send in name (includes recv, recvmsg, recvfrom, send ,sendmsg, sendto)
-myModule.enumerateExports().filter(module_export => module_export.type === 'function' && myFuncs.some(fName => module_export.name.includes(fName)))
+myModule.enumerateExports().filter(module_export => module_export.type === 'function' && 
+                                    myFuncs.some(fName => module_export.name.includes(fName)))
 .forEach(module_export => {
   Interceptor.attach(module_export.address, {
     onEnter: function (args) { // every time we enter one of the functions, we will log this

@@ -32,7 +32,7 @@ function getAttachDetails(cls, f, aTypes) {
 
 if(Java.available){
   Java.performNow(function() {
-    var javaClasses = Java.enumerateLoadedClassesSync().filter(cls => uClasses.some(userCls => cls.includes(userCls)));//.filter(cls => classes.includes(cls));
+    var javaClasses = Java.enumerateLoadedClassesSync().filter(cls => uClasses.some(userCls => cls.includes(userCls)));
     javaClasses.forEach(cls => {
       var m = Java.enumerateMethods(cls+'!*'); // find all methods from given class
       var cMethods = extractMethods(m);
@@ -55,9 +55,7 @@ if(Java.available){
             }
 
             send(event_data);               
-            this[f].apply(this, arguments); // With apply , you can write a method once, and then inherit it in another object, 
-                                            // without having to rewrite the method for the new object. apply is very similar to call() , 
-                                            // except for the type of arguments it supports. You use an arguments array instead of a list of arguments (parameters).
+            this[f].apply(this, arguments);
           }
         }
       });
