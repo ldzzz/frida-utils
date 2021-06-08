@@ -114,7 +114,7 @@ class BleLogger {
 
 
 if (Java.available) {
-    BleLogger.info("Starting enumerate script ...")
+    BleLogger.info("Starting fuzzing script ...")
     Java.perform(function () {
         let ble_gatt_cb = Java.use("android.bluetooth.BluetoothGattCallback");
         ble_gatt_cb.$init.overload().implementation = function () {
