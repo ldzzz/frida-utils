@@ -9,16 +9,27 @@ import os
 logger = logging.getLogger('debug_logger')
 
 
-class DynamicMonitor(AbstractMonitor):
+class JavaCryptoMonitor(AbstractMonitor):
     def __init__(self, package, pm):
-        self._hook_fname = os.path.join(HOOK_PATH, "dynamicMonitor.js")
+        self._hook_fname = os.path.join(HOOK_PATH, "javaCryptoMonitor.js")
         self.package = package
         self._session = None
         self._plist = None
         self._pm = pm
     
     def parse_payload(self, payload):
-        print(payload)
+        attach  = payload.get('attach')
+        name    = payload.get('name')
+        args    = payload.get('args')
+
+        if attach:
+            self._pm.print_msg(attach, MessageCode.INFO)
+        
+        if name and args:
+            txt = '[*] Function: ' + name
+            for c, e in enumerate(args):
+                txt += "\n" + " "*4 + "|-- %4s  %s" % ("args[{}]:".format(c), "{}".format(e))
+            self._pm.print_list([txt])
 
     def on_message(self, message, data):
         try:
@@ -36,4 +47,4 @@ class DynamicMonitor(AbstractMonitor):
         return hook.read()
 
     def run(self): #TODO: rework probably not needed
-        self._pm.print_msg("Going to monitor libc:\n", MessageCode.INFO)
+        self._pm.print_msg("Going to monitor user-provided data:\n", MessageCode.INFO)
