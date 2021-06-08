@@ -120,11 +120,6 @@ if (Java.available) {
         ble_gatt_cb.$init.overload().implementation = function () {
             BleLogger.info("android.bluetooth.BluetoothGattCallback called by " + this.$className);
             let ble_gatt_cb_new = Java.use(this.$className);
-            ble_gatt_cb_new.onServicesDiscovered.implementation = function (gatt, status) {
-                let retval = ble_gatt_cb_new.onServicesDiscovered.call(this, gatt, status);
-                return retval;
-            };
-
             // Override BluetoothGattCallback functions, log their output and return the same retval 
             ble_gatt_cb_new.onCharacteristicRead.implementation = function (gatt, chr, status) {
                 fuzz_value(gatt, chr, "READ")
