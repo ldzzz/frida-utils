@@ -30,6 +30,10 @@ def _parse_args():
     parser_imports.add_argument("-i", "--include", help="Filter modules by name (partial or full)")
     parser_imports.add_argument("-e", "--exclude", help="Filter out modules by name (partial or full)")
 
+    parser_java = subparsers.add_parser('J', help='Enumerate Java classes')
+    parser_java.add_argument("-i", "--include", help="Filter classes by name (partial or full)")
+    parser_java.add_argument("-e", "--exclude", help="Filter out classes by name (partial or full)")
+
     params = parser.parse_args()
     logger.debug('Params received: %s', params)
     return params
